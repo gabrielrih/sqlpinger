@@ -1,7 +1,7 @@
 # sqlpinger
-A lightweight CLI tool to monitor SQL Server availability by continuously executing SELECT 1. Automatically detects and logs downtime periods, including total duration and timestamps — and prints a summary report at the end of execution.
+A lightweight CLI tool to monitor SQL Server availability by continuously executing SELECT 1. It automatically detects and logs downtime periods, including total duration and timestamps — and prints a summary report at the end of execution.
 
-Perfect for testing connectivity, diagnosing intermittent issues, or validating failovers.
+Perfect for testing connectivity, diagnosing intermittent issues or validating failovers.
 
 ## Features
 - Continuous connection monitoring

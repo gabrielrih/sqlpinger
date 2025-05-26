@@ -19,7 +19,6 @@ class SqlAvailabilityMonitor:
         self.interval = interval
         self.auth_strategy = auth_strategy
         self.conn_str = auth_strategy.get_connection_string(server, database)
-
         self.conn = None
         self.downtime_start = None
         self.summary = DowntimeSummary()
@@ -27,7 +26,6 @@ class SqlAvailabilityMonitor:
 
     def start_monitoring(self):
         logger.info(f"Starting monitor for {self.server}/{self.database} every {self.interval}s using {self.auth_strategy.__class__.__name__}")
-
         try:
             while True:
                 try:
@@ -47,7 +45,6 @@ class SqlAvailabilityMonitor:
     def run_check(self):
         if self.conn is None or self.conn.closed:
             self.connect()
-
         cursor = self.conn.cursor()
         cursor.execute("SELECT 1")
         cursor.fetchall()
@@ -70,20 +67,19 @@ class SqlAvailabilityMonitor:
 
     def handle_exception(self, error: Exception):
         self.disconnect()
-
         # when it's the first downtime of the period
         if not self.is_downtime():
             self.downtime_start = datetime.now()
             self.last_error_message_hash = calculate_md5(str(error))
             logger.error(f'❌ Connection failed: {error}')
-            return
-        
+            return  
         logger.debug(f'❌ Connection is still failing: {error}')
 
     def disconnect(self):
-        if self.conn:
-            try:
-                self.conn.close()
-            except:
-                pass
-            self.conn = None
+        if not self.conn:
+            return
+        try:
+            self.conn.close()
+        except:
+            pass
+        self.conn = None

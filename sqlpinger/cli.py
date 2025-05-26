@@ -16,6 +16,5 @@ from sqlpinger.core.ping import SqlAvailabilityMonitor
 def main(server, database, interval, auth, username, password, driver):
     """Ping a SQL Server database continuously and log downtimes"""
     auth_strategy = AuthStrategyFactory.create(auth, driver, username, password)
-
     monitor = SqlAvailabilityMonitor(server, database, interval, auth_strategy)
     monitor.start_monitoring()
