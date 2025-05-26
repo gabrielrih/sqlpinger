@@ -1,7 +1,60 @@
 # sqlpinger
-A lightweight CLI tool to monitor SQL Server availability by continuously executing SELECT 1. Automatically detects and logs downtime periods, including total duration and timestamps.
+A lightweight CLI tool to monitor SQL Server availability by continuously executing SELECT 1. Automatically detects and logs downtime periods, including total duration and timestamps — and prints a summary report at the end of execution.
 
-Usage:
-````
-sqlpinger --server managed-instance-sql-menhbnfe-br-prod-001-clone.9e17f96537b2.database.windows.net --database hbnfe-prod
+Perfect for testing connectivity, diagnosing intermittent issues, or validating failovers.
+
+## Features
+- Continuous connection monitoring
+- Detects and logs downtime periods
+- Smart error grouping (no repeated messages for same errors)
+- JSON-formatted summary with total downtime
+- Supported authentication method: Azure AD (interactive login)
+- Works with Azure SQL Database, Azure Managed Instance and on-prem SQL Server
+
+## Installation
 ```
+poetry install sqlpinger
+```
+
+## Example Usage
+```
+sqlpinger \
+    --server my-server.database.windows.net \
+    --database database-name
+```
+
+Available cli parameters ```sqlpinger --help```
+
+![available cli parameters](.docs/cli_parameters.png)
+
+## Example output
+
+```
+Starting monitor for my-server.database.windows.net/datbase-name every 10s using AzureADInteractive
+✅ Connection is healthy
+❌ Connection failed: [08S01] ... (error message)
+✅ Recovered. Downtime lasted 22.0s.
+```
+
+On Ctrl + C:
+```json
+{
+  "summary": {
+    "downtimes_quantity": 1,
+    "total_downtime": "22 seconds"
+  },
+  "downtimes": [
+    {
+      "from": "2025-05-26 14:42:07",
+      "to": "2025-05-26 14:42:29",
+      "time": "22 seconds"
+    }
+  ]
+}
+```
+
+## Coming soon
+- Supports multiple authentication methods:
+    - Azure AD (interactive login)
+    - SQL Authentication (In progress)
+    - Windows Authentication
