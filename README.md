@@ -13,7 +13,7 @@ Perfect for testing connectivity, diagnosing intermittent issues or validating f
 
 ## Installation
 ```
-poetry install sqlpinger
+poetry install
 ```
 
 ## Example Usage

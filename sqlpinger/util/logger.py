@@ -1,7 +1,7 @@
 import logging
 
 
-LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'DEBUG'
 
 
 class Logger:

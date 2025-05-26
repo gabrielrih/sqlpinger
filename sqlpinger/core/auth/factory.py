@@ -9,8 +9,8 @@ class AuthStrategyFactory:
         auth = auth.lower()
         if auth == 'sql':
             if not username or not password:
-                raise ValueError("SQL authentication requires both username and password.")
+                raise ValueError("SQL authentication requires both username and password")
             return SqlAuth(username, password, driver)
         if auth == 'azure-ad':
             return AzureADInteractive(driver)
-        raise NotImplementedError(f"Authentication method '{auth}' is not supported.")
+        raise NotImplementedError(f"Authentication method '{auth}' is not supported")

@@ -19,3 +19,7 @@ build-backend = "poetry.core.masonry.api"
 
 [project.scripts]
 sqlpinger = "sqlpinger.cli:main"
+
+[tool.poetry.group.dev.dependencies]
+freezegun = "^1.5.2"
+
