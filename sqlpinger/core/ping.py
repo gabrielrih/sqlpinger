@@ -3,6 +3,7 @@ import pyodbc
 
 from datetime import datetime
 
+from sqlpinger.core.sql_commands import build_waitfor_delay_sql
 from sqlpinger.core.auth.base import AuthStrategy
 from sqlpinger.core.summary import DowntimeSummary
 from sqlpinger.util.md5 import calculate_md5
@@ -34,7 +35,7 @@ class SqlAvailabilityMonitor:
                     self.logger.debug('Connection is still healthy')
                 except Exception as e:
                     self.handle_exception(e)
-                time.sleep(self.interval)
+                    time.sleep(self.interval)  # wait some time when it fails to avoid retry all the time
         except KeyboardInterrupt:
             self.logger.warning('🛑 Monitoring stopped by user.')
             self.disconnect()
@@ -45,8 +46,8 @@ class SqlAvailabilityMonitor:
         if self.conn is None or self.conn.closed:
             self.connect()
         cursor = self.conn.cursor()
-        cursor.execute("SELECT 1")
-        cursor.fetchall()
+        sql: str = build_waitfor_delay_sql(seconds = self.interval)
+        cursor.execute(sql)
 
     def connect(self):
         self.conn = pyodbc.connect(self.conn_str, timeout=self.interval)
@@ -72,7 +73,7 @@ class SqlAvailabilityMonitor:
             self.last_error_message_hash = calculate_md5(str(error))
             self.logger.error(f'❌ Connection failed: {error}')
             return  
-        self.logger.debug('❌ Connection is still failing!')
+        self.logger.debug('Connection is still failing!')
 
     def disconnect(self):
         if not self.conn:
