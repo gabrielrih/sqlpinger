@@ -3,13 +3,11 @@ import pyodbc
 
 from datetime import datetime
 
+from sqlpinger.core.sql_commands import build_waitfor_delay_sql
 from sqlpinger.core.auth.base import AuthStrategy
 from sqlpinger.core.summary import DowntimeSummary
 from sqlpinger.util.md5 import calculate_md5
 from sqlpinger.util.logger import Logger
-
-
-logger = Logger.get_logger(__name__)
 
 
 class SqlAvailabilityMonitor:
@@ -18,6 +16,8 @@ class SqlAvailabilityMonitor:
         self.database = database
         self.interval = interval
         self.auth_strategy = auth_strategy
+
+        self.logger = Logger.get_logger(__name__)
         self.conn_str = auth_strategy.get_connection_string(server, database)
         self.conn = None
         self.downtime_start = None
@@ -25,33 +25,33 @@ class SqlAvailabilityMonitor:
         self.last_error_message_hash = None
 
     def start_monitoring(self):
-        logger.info(f"Starting monitor for {self.server}/{self.database} every {self.interval}s using {self.auth_strategy.__class__.__name__}")
+        self.logger.info(f"Starting monitor for {self.server}/{self.database} every {self.interval}s using {self.auth_strategy.__class__.__name__}")
         try:
             while True:
                 try:
                     self.run_check()
                     if self.is_downtime():
                         self.recovery_from_downtime()
-                    logger.debug('Connection is still healthy')
+                    self.logger.debug('Connection is still healthy')
                 except Exception as e:
                     self.handle_exception(e)
-                time.sleep(self.interval)
+                    time.sleep(self.interval)  # wait some time when it fails to avoid retry all the time
         except KeyboardInterrupt:
-            logger.warning('🛑 Monitoring stopped by user.')
+            self.logger.warning('🛑 Monitoring stopped by user.')
             self.disconnect()
-            logger.info("📋 Downtime Summary:")
-            logger.info(str(self.summary))
+            self.logger.info("📋 Downtime Summary:")
+            self.logger.info(str(self.summary))
 
     def run_check(self):
         if self.conn is None or self.conn.closed:
             self.connect()
         cursor = self.conn.cursor()
-        cursor.execute("SELECT 1")
-        cursor.fetchall()
+        sql: str = build_waitfor_delay_sql(seconds = self.interval)
+        cursor.execute(sql)
 
     def connect(self):
         self.conn = pyodbc.connect(self.conn_str, timeout=self.interval)
-        logger.info("✅ Connection is healthy")
+        self.logger.info("✅ Connection is healthy")
 
     def is_downtime(self) -> bool:
         if self.downtime_start:
@@ -61,7 +61,7 @@ class SqlAvailabilityMonitor:
     def recovery_from_downtime(self):
         downtime_end = datetime.now()
         duration = (downtime_end - self.downtime_start).total_seconds()
-        logger.warning(f"✅ Recovered. Downtime lasted {duration:.2f}s.")
+        self.logger.warning(f"✅ Recovered. Downtime lasted {duration:.2f}s.")
         self.summary.record(self.downtime_start, downtime_end)
         self.downtime_start = None
 
@@ -71,9 +71,9 @@ class SqlAvailabilityMonitor:
         if not self.is_downtime():
             self.downtime_start = datetime.now()
             self.last_error_message_hash = calculate_md5(str(error))
-            logger.error(f'❌ Connection failed: {error}')
+            self.logger.error(f'❌ Connection failed: {error}')
             return  
-        logger.debug(f'❌ Connection is still failing: {error}')
+        self.logger.debug('Connection is still failing!')
 
     def disconnect(self):
         if not self.conn:

@@ -5,12 +5,12 @@ from sqlpinger.core.auth.azure_ad import AzureADInteractive
 
 class AuthStrategyFactory:
     @staticmethod
-    def create(auth: str, driver: str, username: str = '', password: str = '') -> AuthStrategy:
+    def create(auth: str, driver: str, timeout_in_seconds: int, username: str = '', password: str = '') -> AuthStrategy:
         auth = auth.lower()
         if auth == 'sql':
             if not username or not password:
                 raise ValueError("SQL authentication requires both username and password")
-            return SqlAuth(username, password, driver)
+            return SqlAuth(username, password, driver, timeout_in_seconds)
         if auth == 'azure-ad':
-            return AzureADInteractive(driver)
+            return AzureADInteractive(driver, timeout_in_seconds)
         raise NotImplementedError(f"Authentication method '{auth}' is not supported")
