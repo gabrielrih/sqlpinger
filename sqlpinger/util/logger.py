@@ -1,12 +1,15 @@
 import logging
 
-
-LOG_LEVEL = 'INFO'
+import sqlpinger.config as config
 
 
 class Logger:
     @staticmethod
     def get_logger(name):
+        LOG_LEVEL = 'INFO'
+        print(str(config.verbose))
+        if config.verbose:
+            LOG_LEVEL = 'DEBUG'
         logger = logging.getLogger(name)
         logger.setLevel(level=LOG_LEVEL)
         handler = logging.StreamHandler()
