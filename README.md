@@ -8,7 +8,7 @@ Perfect for testing connectivity, diagnosing intermittent issues or validating f
 - Detects and logs downtime periods
 - Smart error grouping (no repeated messages for same errors)
 - JSON-formatted summary with total downtime
-- Supported authentication method: Azure AD (interactive login)
+- Supported authentication method: Azure AD (interactive login) and Windows Authentication
 - Works with Azure SQL Database, Azure Managed Instance and on-prem SQL Server
 
 ## Installation
@@ -54,7 +54,4 @@ On Ctrl + C:
 ```
 
 ## Coming soon
-- Supports multiple authentication methods:
-    - Azure AD (interactive login)
-    - SQL Authentication (In progress)
-    - Windows Authentication
+- One more authentication methods: SQL Authentication
