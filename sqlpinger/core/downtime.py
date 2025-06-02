@@ -1,6 +1,8 @@
 import json
 from datetime import datetime
-from typing import List, Dict
+from typing import List, Dict, Optional
+
+from sqlpinger.util.logger import Logger
 
 
 class DowntimeSummary:
@@ -30,3 +32,33 @@ class DowntimeSummary:
             },
             "downtimes": self.downtimes
         }
+
+
+class Downtime:
+    def __init__(self, summary: Optional[DowntimeSummary] = None):
+        self.start_date = None
+        self.end_date = None
+        self.summary = summary if summary else DowntimeSummary()
+        self.logger = Logger.get_logger(__name__)
+
+    def start(self):
+        if self.is_active():  # downtime already started
+            return
+        self.start_date = datetime.now()
+        self.end_date = None
+
+    def is_active(self) -> bool:
+        return self.start_date is not None
+    
+    def finish(self) -> Optional[int]:
+        if not self.is_active():
+            return
+        self.end_date = datetime.now()
+        self.summary.record(self.start_date, self.end_date)
+        duration: float = duration_in_seconds(self.start_date, self.end_date)
+        self.start_date = None
+        return int(duration)
+
+
+def duration_in_seconds(start_date: datetime, end_date: datetime) -> float:
+    return (end_date - start_date).total_seconds()
