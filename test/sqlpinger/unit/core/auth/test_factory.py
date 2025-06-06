@@ -3,6 +3,7 @@ from pytest import raises
 
 from sqlpinger.core.auth.factory import AuthStrategyFactory
 from sqlpinger.core.auth.sql_auth import SqlAuth
+from sqlpinger.core.auth.windows_auth import WindowsAuth
 from sqlpinger.core.auth.azure_ad import AzureADInteractive
 
 
@@ -20,6 +21,12 @@ class TestAuthStrategyFactory(TestCase):
             )
         error_message: str = str(exc.value)
         self.assertEqual(error_message, "SQL authentication requires both username and password")
+
+    def test_create_when_windows_authentication(self):
+        auth_strategy = AuthStrategyFactory.create(
+            auth = 'windows', driver = 'any_here', timeout_in_seconds = 10
+        )
+        self.assertIsInstance(auth_strategy, WindowsAuth)
 
     def test_create_when_azure_ad(self):
         auth_strategy = AuthStrategyFactory.create(
