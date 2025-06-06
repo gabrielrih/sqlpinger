@@ -18,7 +18,7 @@ from sqlpinger.core.ping import SqlAvailabilityMonitor
 @click.option('--verbose', is_flag = True, help="Enable verbose output")
 @click.version_option(__version__)
 def main(server, database, interval, auth, username, password, driver, verbose):
-    """Ping a SQL Server database continuously and log downtimes"""
+    """Monitor a SQL Server database continuously and log downtimes"""
     config.verbose = verbose
     auth_strategy = AuthStrategyFactory.create(auth, driver, username, password)
     monitor = SqlAvailabilityMonitor(server, database, interval, auth_strategy)
