@@ -60,7 +60,7 @@ class TestDowntime(TestCase):
         self.assertIsInstance(downtime.start_date, datetime)
         self.assertIsNone(downtime.end_date)
 
-    def test_start_and_end(self):
+    def test_start_and_finish_it(self):
         summary = DowntimeSummary()
         downtime = Downtime(summary)
         downtime.start()
