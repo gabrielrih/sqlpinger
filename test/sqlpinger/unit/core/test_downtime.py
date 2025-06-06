@@ -4,7 +4,6 @@ from unittest import TestCase
 from freezegun import freeze_time
 from datetime import datetime, timedelta
 from typing import Dict
-from datetime import datetime
 
 from sqlpinger.core.downtime import DowntimeSummary, Downtime
 
