@@ -2,6 +2,7 @@ import click
 
 import sqlpinger.config as config
 
+from sqlpinger import __version__
 from sqlpinger.core.auth.factory import AuthStrategyFactory
 from sqlpinger.core.ping import SqlAvailabilityMonitor
 
@@ -15,9 +16,11 @@ from sqlpinger.core.ping import SqlAvailabilityMonitor
 @click.option('--password', help='Password for SQL Server authentication', required = False)
 @click.option('--driver', default='ODBC Driver 18 for SQL Server', show_default=True, help='ODBC driver name')
 @click.option('--verbose', is_flag = True, help="Enable verbose output")
+@click.version_option(__version__)
 def main(server, database, interval, auth, username, password, driver, verbose):
     """Ping a SQL Server database continuously and log downtimes"""
     config.verbose = verbose
     auth_strategy = AuthStrategyFactory.create(auth, driver, username, password)
     monitor = SqlAvailabilityMonitor(server, database, interval, auth_strategy)
     monitor.start_monitoring()
+
