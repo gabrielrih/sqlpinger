@@ -3,7 +3,12 @@ A lightweight CLI tool to monitor SQL Server availability by continuously execut
 
 Perfect for testing connectivity, diagnosing intermittent issues or validating failovers.
 
-## Features
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Coming soon](#coming-soon)
+
+# Features
 - Continuous connection monitoring
 - Detects and logs downtime periods
 - Smart error grouping (no repeated messages for same errors)
@@ -11,12 +16,40 @@ Perfect for testing connectivity, diagnosing intermittent issues or validating f
 - Supported authentication method: Azure AD (interactive login) and Windows Authentication
 - Works with Azure SQL Database, Azure Managed Instance and on-prem SQL Server
 
-## Installation
+# Installation
+
+## Requirements
+
+- [Python](https://www.python.org/downloads/): >= 3.11
+
+## Via GitHub Releases
+You can install this tool by downloading the latest ```.whl``` file from GitHub Releases and using pip.
+
+- Go to the [Releases page](https://github.com/gabrielrih/sqlpinger/releases/).
+- Find the latest version and download the ```.whl``` file (Example, ```sqlpinger-1.0.0-py3-none-any.whl```).
+
+Or you can download it from the terminal:
+
 ```
-poetry install
+wget -O "sqlpinger-1.0.0-py3-none-any.whl" "https://github.com/gabrielrih/sqlpinger/releases/download/v1.0.0/sqlpinger-1.0.0-py3-none-any.whl"
 ```
 
-## Example Usage
+- After downloading the .whl file, install it using pip:
+
+```
+pip install --user sqlpinger-1.0.0-py3-none-any.whl
+```
+
+By doing that a ```sqlpinger.exe``` file will be created probably on the folder: ```C:\Users\user\AppData\Roaming\Python\Python312\Scripts```. So, you must add this folder on the user PATH.
+
+To see the installed version you can run:
+
+```
+pip show sqlpinger
+```
+
+
+# Usage
 ```
 sqlpinger \
     --server my-server.database.windows.net \
@@ -53,5 +86,5 @@ On Ctrl + C:
 }
 ```
 
-## Coming soon
+# Coming soon
 - One more authentication methods: SQL Authentication
