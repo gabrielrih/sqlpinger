@@ -16,4 +16,5 @@ class SqlAuth(AuthStrategy):
             f"UID={self.username};"
             f"PWD={self.password};"
             f"Connection Timeout={self.timeout_in_seconds};"
+            "TrustServerCertificate=yes;"
         )
