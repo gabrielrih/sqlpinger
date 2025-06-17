@@ -14,7 +14,7 @@ class TestSqlAuth(TestCase):
 
     def test_get_connection_string(self):
         # Given
-        expected_conn_string: str = f'DRIVER={{{self.driver}}};SERVER={self.server};DATABASE={self.database};UID={self.username};PWD={self.password};Connection Timeout={self.timeout_in_seconds};'
+        expected_conn_string: str = f'DRIVER={{{self.driver}}};SERVER={self.server};DATABASE={self.database};UID={self.username};PWD={self.password};Connection Timeout={self.timeout_in_seconds};TrustServerCertificate=yes;'
 
         # When
         auth = SqlAuth(username = self.username, password = self.password, driver = self.driver, timeout_in_seconds = self.timeout_in_seconds)

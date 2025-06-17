@@ -6,14 +6,16 @@ Perfect for testing connectivity, diagnosing intermittent issues or validating f
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Coming soon](#coming-soon)
 
 # Features
 - Continuous connection monitoring
 - Detects and logs downtime periods
 - Smart error grouping (no repeated messages for same errors)
 - JSON-formatted summary with total downtime
-- Supported authentication method: Azure AD (interactive login) and Windows Authentication
+- Supported authentication method:
+  - Azure AD (interactive login)
+  - Windows Authentication
+  - SQL Authentication
 - Works with Azure SQL Database, Azure Managed Instance and on-prem SQL Server
 
 # Installation
@@ -85,6 +87,3 @@ On Ctrl + C:
   ]
 }
 ```
-
-# Coming soon
-- One more authentication methods: SQL Authentication
