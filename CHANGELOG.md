@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.2.0-rc.1 (2025-06-17)
+
+### Features
+
+- Enabling support for SQL authentication
+  ([`06acaef`](https://github.com/gabrielrih/sqlpinger/commit/06acaefd5169d2be07185f5522da64de6610e771))
+
+
 ## v1.1.0 (2025-06-06)
 
 
