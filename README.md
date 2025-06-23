@@ -33,13 +33,13 @@ You can install this tool by downloading the latest ```.whl``` file from GitHub 
 Or you can download it from the terminal:
 
 ```
-wget -O "sqlpinger-1.0.0-py3-none-any.whl" "https://github.com/gabrielrih/sqlpinger/releases/download/v1.0.0/sqlpinger-1.0.0-py3-none-any.whl"
+wget -O "sqlpinger-1.2.0-py3-none-any.whl" "https://github.com/gabrielrih/sqlpinger/releases/download/v1.2.0/sqlpinger-1.2.0-py3-none-any.whl"
 ```
 
 - After downloading the .whl file, install it using pip:
 
 ```
-pip install --user sqlpinger-1.0.0-py3-none-any.whl
+pip install --user sqlpinger-1.2.0-py3-none-any.whl
 ```
 
 By doing that a ```sqlpinger.exe``` file will be created probably on the folder: ```C:\Users\user\AppData\Roaming\Python\Python312\Scripts```. So, you must add this folder on the user PATH.
