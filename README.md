@@ -15,7 +15,7 @@ Perfect for testing connectivity, diagnosing intermittent issues or validating f
 - Supported authentication method:
   - SQL Authentication - `sql` - Recommended one.
   - Azure AD (interactive login) - `azure-ad` - Be careful when using this option. You should need to enter the credentials more than once during the tool's execution.
-  - Windows Authentication - `windows` - Probably not allowed in production environments and the you must be using Windows OS in order to use this option.
+  - Windows Authentication - `windows` - This option is probably not allowed in production environments, and you must be using Windows OS to use it.
 - Works with Azure SQL Database, Azure Managed Instance and on-prem SQL Server
 
 # Installation
