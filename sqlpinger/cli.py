@@ -11,7 +11,7 @@ from sqlpinger.core.ping import SqlAvailabilityMonitor
 @click.option('--server', required=True, help='SQL Server hostname or IP')
 @click.option('--database', required=True, help='Database name')
 @click.option('--interval', default=5, show_default=True, help='Seconds between each check')
-@click.option('--auth', type=click.Choice(AuthTypes.to_list()), default=AuthTypes.AZURE_AD.value, show_default=True)
+@click.option('--auth', type=click.Choice(AuthTypes.to_list()), default=AuthTypes.SQL.value, show_default=True)
 @click.option('--username', help='Username for SQL Server authentication', required = False)
 @click.option('--password', help='Password for SQL Server authentication', required = False)
 @click.option('--driver', default='ODBC Driver 18 for SQL Server', show_default=True, help='ODBC driver name')

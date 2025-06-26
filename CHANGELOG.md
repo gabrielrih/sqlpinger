@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.3.0-rc.1 (2025-06-26)
+
+### Features
+
+- Changing the default auth option
+  ([`a009eff`](https://github.com/gabrielrih/sqlpinger/commit/a009eff7c53a49a94c23503cfe79d2672df2068d))
+
+
 ## v1.2.0 (2025-06-17)
 
 
