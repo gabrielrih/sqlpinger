@@ -13,9 +13,9 @@ Perfect for testing connectivity, diagnosing intermittent issues or validating f
 - Smart error grouping (no repeated messages for same errors)
 - JSON-formatted summary with total downtime
 - Supported authentication method:
-  - Azure AD (interactive login)
-  - Windows Authentication
-  - SQL Authentication
+  - Azure AD (interactive login): `azure-ad`
+  - Windows Authentication: `windows`
+  - SQL Authentication: `sql`
 - Works with Azure SQL Database, Azure Managed Instance and on-prem SQL Server
 
 # Installation
@@ -55,12 +55,17 @@ pip show sqlpinger
 ```
 sqlpinger \
     --server my-server.database.windows.net \
-    --database database-name
+    --database database-name \
+    --auth sql \
+    --username my_user \
+    --verbose
 ```
 
 Available cli parameters ```sqlpinger --help```
 
 ![available cli parameters](.docs/cli_parameters.png)
+
+> Be careful when using the default authentication option `azure-ad`. It will open a window prompting you to enter your credentials. However, this prompt may appear at any point during the tool's execution. If you miss it and don't complete the authentication, the tool will get stuck.
 
 ## Example output
 
