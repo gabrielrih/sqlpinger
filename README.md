@@ -109,3 +109,7 @@ It includes:
 - **Cursor or connection forcibly closed**: The database engine or client unexpectedly closed the session or cursor;
 - **SQL Server restarted** during execution;
 - A `kill` on the query execution;
+
+In order to reduce the possibility of unexpected errors, I recommend that you:
+- Run this CLI within the **same local network** as the target SQL Server (to minimize the chance of VPN or network issues);
+- Use **SQL authentication** to reduce the likelihood of login failure errors.
