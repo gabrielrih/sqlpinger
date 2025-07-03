@@ -6,6 +6,7 @@ Perfect for testing connectivity, diagnosing intermittent issues or validating f
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Things to keep in mind](#things-to-keep-in-mind)
 
 # Features
 - Continuous connection monitoring
