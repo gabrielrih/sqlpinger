@@ -1,5 +1,5 @@
 # sqlpinger
-A lightweight CLI tool for monitoring SQL Server availability. It continuously executes `WAITFOR DELAY` queries, automatically detecting and logging downtime intervals (with timestamps and total duration). When stopped (e.g., via Ctrl+C), it outputs a summary report.
+A lightweight CLI tool for monitoring SQL Server availability. It continuously executes `WAITFOR DELAY` queries, automatically detecting and logging downtime intervals (with timestamps and total duration). When stopped (e.g., via Ctrl+C), it outputs a summary report. Perfect for connectivity testing, diagnosing intermittent failures or validating failover scenarios.
 
 > In this context, "downtime" refers to any execution failure—not necessarily that the SQL Server is completely down.
 
