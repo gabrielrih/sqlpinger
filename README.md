@@ -1,9 +1,7 @@
 # sqlpinger
-A lightweight CLI tool to monitor SQL Server availability by continuously executing WAITFOR DELAY on the database. It automatically detects and logs downtime periods, including total duration and timestamps — and prints a summary report when the user cancels its execution.
+A lightweight CLI tool for monitoring SQL Server availability. It continuously executes `WAITFOR DELAY` queries, automatically detecting and logging downtime intervals (with timestamps and total duration). When stopped (e.g., via Ctrl+C), it outputs a summary report.
 
-Perfect for testing connectivity, diagnosing intermittent issues or validating failovers.
-
-> Note that the concept of downtime used by this tool doesn't necessarily mean that the SQL Server itself is down. It simply means that something went wrong. This tool is intended to support downtime estimation, especially in scenarios where you know a downtime could happen soon (for example, when changing the service tier of an Azure SQL Database). Look at the topic [Things to keep in mind](#things-to-keep-in-mind) for more details about what could be consider as downtime.
+> In this context, "downtime" refers to any execution failure—not necessarily that the SQL Server is completely down.
 
 - [Features](#features)
 - [Installation](#installation)
@@ -15,33 +13,23 @@ Perfect for testing connectivity, diagnosing intermittent issues or validating f
 - Detects and logs downtime periods
 - Smart error grouping (no repeated messages for same errors)
 - JSON-formatted summary with total downtime
-- Supported authentication method:
-  - SQL Authentication - `sql` - Recommended one.
-  - Azure AD (interactive login) - `azure-ad` - Be careful when using this option. You should need to enter the credentials more than once during the tool's execution.
-  - Windows Authentication - `windows` - This option is probably not allowed in production environments, and you must be using Windows OS to use it.
+- **Supported authentication methods**:
+  - **SQL Authentication** - `sql` - Recommended.
+  - **Azure AD (interactive login)** - `azure-ad` - May prompt for credentials multiple times during execution.
+  - **Windows Authentication** - `windows` - Only available on Windows and generally not suitable for production environments.
 - Works with Azure SQL Database, Azure Managed Instance and on-prem SQL Server
 
 # Installation
 
 ## Requirements
 
-- [Python](https://www.python.org/downloads/): >= 3.11
+- [Python](https://www.python.org/downloads/) 3.11 or newer.
 
 ## Via GitHub Releases
-You can install this tool by downloading the latest ```.whl``` file from GitHub Releases and using pip.
-
-- Go to the [Releases page](https://github.com/gabrielrih/sqlpinger/releases/).
-- Find the latest version and download the ```.whl``` file (Example, ```sqlpinger-1.3.0-py3-none-any.whl```).
-
-Or you can download it from the terminal:
+You can install the tool by downloading the latest `.whl` file from the Releases page and installing it with pip:
 
 ```
 wget -O "sqlpinger-1.3.0-py3-none-any.whl" "https://github.com/gabrielrih/sqlpinger/releases/download/v1.3.0/sqlpinger-1.3.0-py3-none-any.whl"
-```
-
-- After downloading the .whl file, install it using pip:
-
-```
 pip install --user sqlpinger-1.3.0-py3-none-any.whl
 ```
 
@@ -53,8 +41,8 @@ To see the installed version you can run:
 pip show sqlpinger
 ```
 
-
 # Usage
+
 ```
 sqlpinger \
     --server my-server.database.windows.net \
@@ -64,9 +52,7 @@ sqlpinger \
     --verbose
 ```
 
-Available cli parameters ```sqlpinger --help```
-
-![available cli parameters](.docs/cli_parameters.png)
+For a full list of options, run: ```sqlpinger --help```
 
 > Be careful when using the authentication option `azure-ad`. It will open a window prompting you to enter your credentials. However, this prompt may appear at any point during the tool's execution. If you miss it and don't complete the authentication, the tool will get stuck.
 
@@ -97,19 +83,18 @@ On Ctrl + C:
 ```
 
 # Things to keep in mind
-This CLI will consider as downtime anything that prevents a proper connection and execution of the WAITFOR DELAY query.
+This CLI will consider as "downtime" anything that prevents a proper connection and execution of the `WAITFOR DELAY` query, including:
 
-It includes:
-- **Connection issues**: Connection timeout, Network unreachable, host not found, TCP connection refused and more;
-- **Transient network errors**: Temporary disruptions such as packet loss, high latency, or intermittent drops;
-- **Login failed** by invalid credentials or SQL Server authentication issues;
-- **Query execution timeout**: The connection was successful, but the query didn't complete in time;
-- **Session forcibly closed**: Unexpected termination of the connection, possibly due to idle timeout or security policies;
-- **Firewall or VPN blocking the connection**;
-- **Cursor or connection forcibly closed**: The database engine or client unexpectedly closed the session or cursor;
-- **SQL Server restarted** during execution;
+- Connection issues: Connection timeout, Network unreachable, host not found, TCP connection refused and more;
+- Transient network errors: Temporary disruptions such as packet loss, high latency, or intermittent drops;
+- Login failed by invalid credentials or SQL Server authentication issues;
+- Query execution timeout: The connection was successful, but the query didn't complete in time;
+- Session forcibly closed: Unexpected termination of the connection, possibly due to idle timeout or security policies;
+- Firewall or VPN blocking the connection;
+- Cursor or connection forcibly closed: The database engine or client unexpectedly closed the session or cursor;
+- SQL Server restartes during execution;
 - A `kill` on the query execution;
 
-In order to reduce the possibility of unexpected errors, I recommend that you:
-- Run this CLI within the **same local network** as the target SQL Server (to minimize the chance of VPN or network issues);
-- Use **SQL authentication** to reduce the likelihood of login failure errors.
+**Recommendations to reduce false positives:**
+- Run this CLI on the **same local network** as the SQL Server to avoid VPN or network-related issues;
+- Prefer **SQL authentication** to mitigate login failures from other auth methods.
