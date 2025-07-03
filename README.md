@@ -1,5 +1,5 @@
 # sqlpinger
-A lightweight CLI tool to monitor SQL Server availability by continuously executing WAITFOR DELAY on the database. It automatically detects and logs downtime periods, including total duration and timestamps — and prints a summary report at the end of execution.
+A lightweight CLI tool to monitor SQL Server availability by continuously executing WAITFOR DELAY on the database. It automatically detects and logs downtime periods, including total duration and timestamps — and prints a summary report when the user cancels its execution.
 
 Perfect for testing connectivity, diagnosing intermittent issues or validating failovers.
 
@@ -65,7 +65,7 @@ Available cli parameters ```sqlpinger --help```
 
 ![available cli parameters](.docs/cli_parameters.png)
 
-> Be careful when using the default authentication option `azure-ad`. It will open a window prompting you to enter your credentials. However, this prompt may appear at any point during the tool's execution. If you miss it and don't complete the authentication, the tool will get stuck.
+> Be careful when using the authentication option `azure-ad`. It will open a window prompting you to enter your credentials. However, this prompt may appear at any point during the tool's execution. If you miss it and don't complete the authentication, the tool will get stuck.
 
 ## Example output
 
