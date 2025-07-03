@@ -3,6 +3,8 @@ A lightweight CLI tool to monitor SQL Server availability by continuously execut
 
 Perfect for testing connectivity, diagnosing intermittent issues or validating failovers.
 
+> Note that the concept of downtime used by this tool doesn't necessarily mean that the SQL Server itself is down. It simply means that something went wrong. This tool is intended to support downtime estimation, especially in scenarios where you know a downtime could happen soon (for example, when changing the service tier of an Azure SQL Database). Look at the topic [Things to keep in mind](#things-to-keep-in-mind) for more details about what could be consider as downtime.
+
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -107,5 +109,3 @@ It includes:
 - **Cursor or connection forcibly closed**: The database engine or client unexpectedly closed the session or cursor;
 - **SQL Server restarted** during execution;
 - A `kill` on the query execution;
-
-Note that the concept of downtime used by this tool doesn't necessarily mean that the SQL Server itself is down. It simply means that something went wrong. This tool is intended to support downtime estimation, especially in scenarios where you know a downtime could happen soon (for example, when changing the service tier of an Azure SQL Database).
