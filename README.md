@@ -92,3 +92,15 @@ On Ctrl + C:
   ]
 }
 ```
+
+# Things to keep in mind
+This CLI will consider as downtime anything that prevents a proper connection and execution of the WAITFOR DELAY query. It includes:
+- **Connection issues**: Connection timeout, Network unreachable, host not found, TCP connection refused and more;
+- **Transient network errors**: Temporary disruptions such as packet loss, high latency, or intermittent drops;
+-**Login failed** by invalid credentials or SQL Server authentication issues;
+- **Query execution timeout**: The connection was successful, but the query didn't complete in time;
+- **Session forcibly closed**: Unexpected termination of the connection, possibly due to idle timeout or security policies;
+- **Firewall or VPN blocking the connection**;
+- **Cursor or connection forcibly closed**: The database engine or client unexpectedly closed the session or cursor;
+- **SQL Server restarted** during execution;
+- A `kill` on the query execution;
