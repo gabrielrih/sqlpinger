@@ -1,5 +1,5 @@
 # sqlpinger
-A lightweight CLI tool to monitor SQL Server availability by continuously executing WAITFOR DELAY on the database. It automatically detects and logs downtime periods, including total duration and timestamps — and prints a summary report at the end of execution.
+A lightweight CLI tool to monitor SQL Server availability by continuously executing WAITFOR DELAY on the database. It automatically detects and logs downtime periods, including total duration and timestamps — and prints a summary report when the user cancels its execution.
 
 Perfect for testing connectivity, diagnosing intermittent issues or validating failovers.
 
@@ -65,7 +65,7 @@ Available cli parameters ```sqlpinger --help```
 
 ![available cli parameters](.docs/cli_parameters.png)
 
-> Be careful when using the default authentication option `azure-ad`. It will open a window prompting you to enter your credentials. However, this prompt may appear at any point during the tool's execution. If you miss it and don't complete the authentication, the tool will get stuck.
+> Be careful when using the authentication option `azure-ad`. It will open a window prompting you to enter your credentials. However, this prompt may appear at any point during the tool's execution. If you miss it and don't complete the authentication, the tool will get stuck.
 
 ## Example output
 
@@ -92,3 +92,17 @@ On Ctrl + C:
   ]
 }
 ```
+
+# Things to keep in mind
+This CLI will consider as downtime anything that prevents a proper connection and execution of the WAITFOR DELAY query.
+
+It includes:
+- **Connection issues**: Connection timeout, Network unreachable, host not found, TCP connection refused and more;
+- **Transient network errors**: Temporary disruptions such as packet loss, high latency, or intermittent drops;
+- **Login failed** by invalid credentials or SQL Server authentication issues;
+- **Query execution timeout**: The connection was successful, but the query didn't complete in time;
+- **Session forcibly closed**: Unexpected termination of the connection, possibly due to idle timeout or security policies;
+- **Firewall or VPN blocking the connection**;
+- **Cursor or connection forcibly closed**: The database engine or client unexpectedly closed the session or cursor;
+- **SQL Server restarted** during execution;
+- A `kill` on the query execution;
