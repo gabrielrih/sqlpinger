@@ -107,3 +107,5 @@ It includes:
 - **Cursor or connection forcibly closed**: The database engine or client unexpectedly closed the session or cursor;
 - **SQL Server restarted** during execution;
 - A `kill` on the query execution;
+
+Note that the concept of downtime used by this tool doesn't necessarily mean that the SQL Server itself is down. It simply means that something went wrong. This tool is intended to support downtime estimation, especially in scenarios where you know a downtime could happen soon (for example, when changing the service tier of an Azure SQL Database).
