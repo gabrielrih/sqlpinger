@@ -1,26 +1,29 @@
 import time
 
-from sqlpinger.core.connection import ConnectionManager
-from sqlpinger.core.sql_commands import build_waitfor_delay_sql
 from sqlpinger.core.auth.base import AuthStrategy
 from sqlpinger.core.downtime import Downtime, DowntimeSummary
+from sqlpinger.core.engine import Engine
 from sqlpinger.util.logger import Logger
 
 
-class SqlAvailabilityMonitor:
-    def __init__(self, server: str, database: str, interval: int, auth_strategy: AuthStrategy):
+class AvailabilityMonitor:
+    def __init__(self, server: str, database: str, interval: int, auth_strategy: AuthStrategy, engine: Engine):
         self.server = server
         self.database = database
         self.interval = interval
         self.auth_strategy = auth_strategy
+        self.engine = engine
         self.logger = Logger.get_logger(__name__)
         conn_str = auth_strategy.get_connection_string(server, database)
-        self.connection_manager = ConnectionManager(conn_str, timeout = interval)
+        self.connection_manager = engine.create_connection_manager(conn_str, interval)
         self.summary = DowntimeSummary()
-        self.downtime = Downtime(summary = self.summary)
+        self.downtime = Downtime(summary=self.summary)
 
     def start_monitoring(self):
-        self.logger.info(f"Starting monitor for {self.server}/{self.database} every {self.interval}s using {self.auth_strategy.__class__.__name__}")
+        self.logger.info(
+            f"Starting monitor for {self.server}/{self.database} every {self.interval}s "
+            f"using {self.engine.__class__.__name__} + {self.auth_strategy.__class__.__name__}"
+        )
         try:
             while True:
                 try:
@@ -38,7 +41,7 @@ class SqlAvailabilityMonitor:
             self.logger.info(self.summary)
 
     def run_check(self):
-        sql: str = build_waitfor_delay_sql(seconds = self.interval)
+        sql: str = self.engine.build_heartbeat_sql(self.interval)
         self.connection_manager.execute(sql)
 
     def recover_from_downtime(self):

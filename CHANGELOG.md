@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.4.0-rc.1 (2026-05-08)
+
+### Features
+
+- Implementing the support for PG database type
+  ([`8ee190d`](https://github.com/gabrielrih/sqlpinger/commit/8ee190d949369340e804db0b332f2d9a3f4e59a4))
+
+
 ## v1.3.0 (2025-06-26)
 
 

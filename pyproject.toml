@@ -10,7 +10,8 @@ requires-python = ">=3.11"
 dependencies = [
     "pyodbc (>=5.2.0,<6.0.0)",
     "azure-identity (>=1.23.0,<2.0.0)",
-    "click (>=8.2.1,<9.0.0)"
+    "click (>=8.2.1,<9.0.0)",
+    "psycopg2-binary (>=2.9,<3.0)"
 ]
 packages = [{ include = "sqlpinger" }]
 
@@ -22,7 +23,7 @@ requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [project.scripts]
-sqlpinger = "sqlpinger.cli:main"
+sqlpinger = "sqlpinger.cli:cli"
 
 [tool.poetry.group.dev.dependencies]
 freezegun = "^1.5.2"
