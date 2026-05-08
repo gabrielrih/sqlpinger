@@ -1,7 +1,12 @@
 # sqlpinger
-A lightweight CLI tool for monitoring database availability. For SQL Server it continuously executes `WAITFOR DELAY` queries; for Azure PostgreSQL Flexible Server it issues `SELECT pg_sleep(...)`. In both cases it automatically detects and logs downtime intervals (with timestamps and total duration). When stopped (e.g., via Ctrl+C), it outputs a summary report. Perfect for connectivity testing, diagnosing intermittent failures or validating failover scenarios.
+A lightweight CLI tool for monitoring database availability.
 
-> In this context, "downtime" refers to any execution failure—not necessarily that the database is completely down.
+- For SQL Server it continuously executes `WAITFOR DELAY` queries;
+- For Azure PostgreSQL Flexible Server it issues `SELECT pg_sleep(...)`.
+
+In both cases it automatically detects and logs downtime intervals (with timestamps and total duration). When stopped (e.g., via Ctrl+C), it outputs a summary report. Perfect for connectivity testing, diagnosing intermittent failures or validating failover scenarios.
+
+> In this context, "downtime" refers to any execution failure-not necessarily that the database is completely down.
 
 - [Features](#features)
 - [Installation](#installation)
@@ -15,8 +20,8 @@ A lightweight CLI tool for monitoring database availability. For SQL Server it c
 - Smart error grouping (no repeated messages for same errors)
 - JSON-formatted summary with total downtime
 - **Supported engines**:
-  - **SQL Server** (`sqlpinger mssql ...`) — heartbeat: `WAITFOR DELAY`. Works with Azure SQL Database, Azure Managed Instance and on-prem SQL Server.
-  - **PostgreSQL** (`sqlpinger pg ...`) — heartbeat: `SELECT pg_sleep(...)`. Targeted at Azure PostgreSQL Flexible Server (or any standard Postgres).
+  - **SQL Server** (`sqlpinger mssql ...`) - heartbeat: `WAITFOR DELAY`. Works with Azure SQL Database, Azure Managed Instance and on-prem SQL Server.
+  - **PostgreSQL** (`sqlpinger pg ...`) - heartbeat: `SELECT pg_sleep(...)`. Targeted at Azure PostgreSQL Flexible Server (or any standard Postgres).
 - **Supported authentication methods**:
   - **SQL Server**:
     - **SQL Authentication** - `sql` - Recommended.
@@ -35,8 +40,8 @@ A lightweight CLI tool for monitoring database availability. For SQL Server it c
 You can install the tool by downloading the latest `.whl` file from the Releases page and installing it with pip:
 
 ```
-wget -O "sqlpinger-1.3.0-py3-none-any.whl" "https://github.com/gabrielrih/sqlpinger/releases/download/v1.3.0/sqlpinger-1.3.0-py3-none-any.whl"
-pip install --user sqlpinger-1.3.0-py3-none-any.whl
+wget -O "sqlpinger-2.0.0-py3-none-any.whl" "https://github.com/gabrielrih/sqlpinger/releases/download/v2.0.0/sqlpinger-2.0.0-py3-none-any.whl"
+pip install --user sqlpinger-2.0.0-py3-none-any.whl
 ```
 
 By doing that a ```sqlpinger.exe``` file will be created probably on the folder: ```C:\Users\user\AppData\Roaming\Python\Python312\Scripts```. So, you must add this folder on the user PATH.
@@ -78,9 +83,9 @@ sqlpinger pg \
 For a full list of options, run:
 
 ```
-sqlpinger --help            # lists the subcommands
-sqlpinger mssql --help      # SQL Server flags (incl. --driver)
-sqlpinger pg --help         # PostgreSQL flags (incl. --port, --sslmode)
+sqlpinger --help
+sqlpinger mssql --help
+sqlpinger pg --help
 ```
 
 > Be careful when using the authentication option `azure-ad` (SQL Server only). It will open a window prompting you to enter your credentials. However, this prompt may appear at any point during the tool's execution. If you miss it and don't complete the authentication, the tool will get stuck.
@@ -88,7 +93,7 @@ sqlpinger pg --help         # PostgreSQL flags (incl. --port, --sslmode)
 ## Example output
 
 ```
-Starting monitor for my-server.database.windows.net/datbase-name every 10s using AzureADInteractive
+Starting monitor for my-server.database.windows.net/database-name every 10s using SqlServerEngine + AzureADInteractive
 ✅ Connection is healthy
 ❌ Connection failed: [08S01] ... (error message)
 ✅ Recovered. Downtime lasted 22s.
