@@ -1,7 +1,7 @@
 # sqlpinger
-A lightweight CLI tool for monitoring SQL Server availability. It continuously executes `WAITFOR DELAY` queries, automatically detecting and logging downtime intervals (with timestamps and total duration). When stopped (e.g., via Ctrl+C), it outputs a summary report. Perfect for connectivity testing, diagnosing intermittent failures or validating failover scenarios.
+A lightweight CLI tool for monitoring database availability. For SQL Server it continuously executes `WAITFOR DELAY` queries; for Azure PostgreSQL Flexible Server it issues `SELECT pg_sleep(...)`. In both cases it automatically detects and logs downtime intervals (with timestamps and total duration). When stopped (e.g., via Ctrl+C), it outputs a summary report. Perfect for connectivity testing, diagnosing intermittent failures or validating failover scenarios.
 
-> In this context, "downtime" refers to any execution failure—not necessarily that the SQL Server is completely down.
+> In this context, "downtime" refers to any execution failure—not necessarily that the database is completely down.
 
 - [Features](#features)
 - [Installation](#installation)
@@ -14,11 +14,16 @@ A lightweight CLI tool for monitoring SQL Server availability. It continuously e
 - Detects and logs downtime periods
 - Smart error grouping (no repeated messages for same errors)
 - JSON-formatted summary with total downtime
+- **Supported engines**:
+  - **SQL Server** (`sqlpinger mssql ...`) — heartbeat: `WAITFOR DELAY`. Works with Azure SQL Database, Azure Managed Instance and on-prem SQL Server.
+  - **PostgreSQL** (`sqlpinger pg ...`) — heartbeat: `SELECT pg_sleep(...)`. Targeted at Azure PostgreSQL Flexible Server (or any standard Postgres).
 - **Supported authentication methods**:
-  - **SQL Authentication** - `sql` - Recommended.
-  - **Azure AD (interactive login)** - `azure-ad` - May prompt for credentials multiple times during execution.
-  - **Windows Authentication** - `windows` - Only available on Windows and generally not suitable for production environments.
-- Works with Azure SQL Database, Azure Managed Instance and on-prem SQL Server
+  - **SQL Server**:
+    - **SQL Authentication** - `sql` - Recommended.
+    - **Azure AD (interactive login)** - `azure-ad` - May prompt for credentials multiple times during execution.
+    - **Windows Authentication** - `windows` - Only available on Windows and generally not suitable for production environments.
+  - **PostgreSQL**:
+    - **SQL Authentication** - `sql` - Native username/password (only method supported in this iteration).
 
 # Installation
 
@@ -44,8 +49,12 @@ pip show sqlpinger
 
 # Usage
 
+The CLI exposes one subcommand per engine: `mssql` and `pg`.
+
+## SQL Server
+
 ```
-sqlpinger \
+sqlpinger mssql \
     --server my-server.database.windows.net \
     --database database-name \
     --auth sql \
@@ -53,9 +62,28 @@ sqlpinger \
     --verbose
 ```
 
-For a full list of options, run: ```sqlpinger --help```
+## PostgreSQL
 
-> Be careful when using the authentication option `azure-ad`. It will open a window prompting you to enter your credentials. However, this prompt may appear at any point during the tool's execution. If you miss it and don't complete the authentication, the tool will get stuck.
+```
+sqlpinger pg \
+    --server my-server.postgres.database.azure.com \
+    --database database-name \
+    --auth sql \
+    --username my_user \
+    --port 5432 \
+    --sslmode require \
+    --verbose
+```
+
+For a full list of options, run:
+
+```
+sqlpinger --help            # lists the subcommands
+sqlpinger mssql --help      # SQL Server flags (incl. --driver)
+sqlpinger pg --help         # PostgreSQL flags (incl. --port, --sslmode)
+```
+
+> Be careful when using the authentication option `azure-ad` (SQL Server only). It will open a window prompting you to enter your credentials. However, this prompt may appear at any point during the tool's execution. If you miss it and don't complete the authentication, the tool will get stuck.
 
 ## Example output
 
@@ -84,20 +112,20 @@ On Ctrl + C:
 ```
 
 # Things to keep in mind
-This CLI will consider as "downtime" anything that prevents a proper connection and execution of the `WAITFOR DELAY` query, including:
+This CLI will consider as "downtime" anything that prevents a proper connection and execution of the heartbeat query (`WAITFOR DELAY` for SQL Server or `SELECT pg_sleep(...)` for PostgreSQL), including:
 
 - Connection issues: Connection timeout, Network unreachable, host not found, TCP connection refused and more;
 - Transient network errors: Temporary disruptions such as packet loss, high latency, or intermittent drops;
-- Login failed by invalid credentials or SQL Server authentication issues;
+- Login failed by invalid credentials or authentication issues;
 - Query execution timeout: The connection was successful, but the query didn't complete in time;
 - Session forcibly closed: Unexpected termination of the connection, possibly due to idle timeout or security policies;
 - Firewall or VPN blocking the connection;
 - Cursor or connection forcibly closed: The database engine or client unexpectedly closed the session or cursor;
-- SQL Server restartes during execution;
+- Database restarts during execution;
 - A `kill` on the query execution;
 
 **Recommendations to reduce false positives:**
-- Run this CLI on the **same local network** as the SQL Server to avoid VPN or network-related issues;
+- Run this CLI on the **same local network** as the database to avoid VPN or network-related issues;
 - Prefer **SQL authentication** to mitigate login failures from other auth methods.
 
 # Development
@@ -118,17 +146,30 @@ poetry install
 
 ## Running the CLI from source
 
-Once dependencies are installed, run the CLI through Poetry to use the local source instead of an installed wheel:
+Once dependencies are installed, run the CLI through Poetry to use the local source instead of an installed wheel. The top-level `--help` lists the engine subcommands:
 
 ```
 poetry run sqlpinger --help
+poetry run sqlpinger mssql --help
+poetry run sqlpinger pg --help
 ```
 
-Example with arguments:
+Example with arguments (SQL Server):
 
 ```
-poetry run sqlpinger \
+poetry run sqlpinger mssql \
     --server my-server.database.windows.net \
+    --database database-name \
+    --auth sql \
+    --username my_user \
+    --verbose
+```
+
+Example with arguments (PostgreSQL):
+
+```
+poetry run sqlpinger pg \
+    --server my-server.postgres.database.azure.com \
     --database database-name \
     --auth sql \
     --username my_user \

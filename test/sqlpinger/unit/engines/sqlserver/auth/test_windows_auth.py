@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from sqlpinger.core.auth.windows_auth import WindowsAuth
+from sqlpinger.engines.sqlserver.auth.windows_auth import WindowsAuth
 
 
 class TestWindowsAuth(TestCase):
@@ -15,7 +15,7 @@ class TestWindowsAuth(TestCase):
         expected_conn_string: str = f'DRIVER={{{self.driver}}};SERVER={self.server};DATABASE={self.database};Trusted_Connection=yes;TrustServerCertificate=yes;Connection Timeout={self.timeout_in_seconds};'
 
         # When
-        auth = WindowsAuth(driver = self.driver, timeout_in_seconds = self.timeout_in_seconds)
+        auth = WindowsAuth(driver=self.driver, timeout_in_seconds=self.timeout_in_seconds)
         conn_string = auth.get_connection_string(self.server, self.database)
 
         # Then
