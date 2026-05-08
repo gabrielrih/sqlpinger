@@ -7,6 +7,7 @@ A lightweight CLI tool for monitoring SQL Server availability. It continuously e
 - [Installation](#installation)
 - [Usage](#usage)
 - [Things to keep in mind](#things-to-keep-in-mind)
+- [Development](#development)
 
 # Features
 - Continuous connection monitoring
@@ -98,3 +99,59 @@ This CLI will consider as "downtime" anything that prevents a proper connection 
 **Recommendations to reduce false positives:**
 - Run this CLI on the **same local network** as the SQL Server to avoid VPN or network-related issues;
 - Prefer **SQL authentication** to mitigate login failures from other auth methods.
+
+# Development
+
+This project uses [Poetry](https://python-poetry.org/) to manage dependencies and the virtual environment.
+
+## Requirements
+- [Python](https://www.python.org/downloads/) 3.11 or newer.
+- [Poetry](https://python-poetry.org/docs/#installation).
+
+## Installing dependencies
+
+Install the runtime and development dependencies (pytest, coverage, freezegun):
+
+```
+poetry install
+```
+
+## Running the CLI from source
+
+Once dependencies are installed, run the CLI through Poetry to use the local source instead of an installed wheel:
+
+```
+poetry run sqlpinger --help
+```
+
+Example with arguments:
+
+```
+poetry run sqlpinger \
+    --server my-server.database.windows.net \
+    --database database-name \
+    --auth sql \
+    --username my_user \
+    --verbose
+```
+
+## Running tests
+
+```
+poetry run pytest test/sqlpinger/unit
+```
+
+To run with coverage report:
+
+```
+poetry run coverage run -m pytest test/sqlpinger/unit
+poetry run coverage report
+```
+
+## Building the wheel
+
+```
+poetry build
+```
+
+The generated `.whl` will be placed in the `dist/` folder.
