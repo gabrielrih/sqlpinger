@@ -42,8 +42,8 @@ In both cases it automatically detects and logs downtime intervals (with timesta
 You can install the tool by downloading the latest `.whl` file from the Releases page and installing it with pip:
 
 ```
-wget -O "sqlpinger-<version>-py3-none-any.whl" "https://github.com/gabrielrih/sqlpinger/releases/download/v<version>/sqlpinger-<version>-py3-none-any.whl"
-pip install --user sqlpinger-<version>-py3-none-any.whl
+wget -O "sqlpinger-1.6.0-py3-none-any.whl" "https://github.com/gabrielrih/sqlpinger/releases/download/v1.6.0/sqlpinger-1.6.0-py3-none-any.whl"
+pip install --user sqlpinger-1.6.0-py3-none-any.whl
 ```
 
 By doing that a ```sqlpinger.exe``` file will be created probably on the folder: ```C:\Users\user\AppData\Roaming\Python\Python312\Scripts```. So, you must add this folder on the user PATH.
