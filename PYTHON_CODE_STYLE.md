@@ -5,7 +5,7 @@ when adding or changing Python code in this repository.
 
 ## Baseline
 
-- Target Python 3.11 or newer.
+- Target Python 3.12 or newer.
 - Prefer small, explicit modules with one clear responsibility.
 - Keep code readable over clever. This is a diagnostic CLI; behavior should be
   obvious from the call site.

@@ -36,7 +36,7 @@ In both cases it automatically detects and logs downtime intervals (with timesta
 
 ## Requirements
 
-- [Python](https://www.python.org/downloads/) 3.11 or newer.
+- [Python](https://www.python.org/downloads/) 3.12 or newer.
 
 ## Via GitHub Releases
 You can install the tool by downloading the latest `.whl` file from the Releases page and installing it with pip:
@@ -174,7 +174,7 @@ In continuous mode, this CLI will consider as "downtime" anything that prevents 
 This project uses [Poetry](https://python-poetry.org/) to manage dependencies and the virtual environment.
 
 ## Requirements
-- [Python](https://www.python.org/downloads/) 3.11 or newer.
+- [Python](https://www.python.org/downloads/) 3.12 or newer.
 - [Poetry](https://python-poetry.org/docs/#installation).
 
 ## Installing dependencies

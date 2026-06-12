@@ -7,7 +7,7 @@ This file provides guidance to coding agents when working with this repository.
 `sqlpinger` is a Python CLI that checks database availability for SQL Server
 and PostgreSQL. In continuous mode it repeatedly runs a database-specific
 heartbeat query and records execution failures as downtime intervals. It is
-distributed as a wheel via GitHub Releases and requires Python >=3.11.
+distributed as a wheel via GitHub Releases and requires Python >=3.12.
 
 Supported engines:
 
