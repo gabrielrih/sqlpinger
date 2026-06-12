@@ -17,6 +17,7 @@ In both cases it automatically detects and logs downtime intervals (with timesta
 # Features
 - Continuous connection monitoring
 - Single immediate health check with `--once`
+- Secure default SQL credentials per engine for quick checks
 - Detects and logs downtime periods
 - Smart error grouping (no repeated messages for same errors)
 - JSON-formatted summary with total downtime in continuous mode
@@ -41,8 +42,8 @@ In both cases it automatically detects and logs downtime intervals (with timesta
 You can install the tool by downloading the latest `.whl` file from the Releases page and installing it with pip:
 
 ```
-wget -O "sqlpinger-1.4.0-py3-none-any.whl" "https://github.com/gabrielrih/sqlpinger/releases/download/v1.4.0/sqlpinger-1.4.0-py3-none-any.whl"
-pip install --user sqlpinger-1.4.0-py3-none-any.whl
+wget -O "sqlpinger-<version>-py3-none-any.whl" "https://github.com/gabrielrih/sqlpinger/releases/download/v<version>/sqlpinger-<version>-py3-none-any.whl"
+pip install --user sqlpinger-<version>-py3-none-any.whl
 ```
 
 By doing that a ```sqlpinger.exe``` file will be created probably on the folder: ```C:\Users\user\AppData\Roaming\Python\Python312\Scripts```. So, you must add this folder on the user PATH.
@@ -98,15 +99,40 @@ sqlpinger mssql --server my-server.database.windows.net --database database-name
 sqlpinger pg --server my-server.postgres.database.azure.com --database database-name --auth sql --username my_user --once
 ```
 
+## Default credentials for quick checks
+
+For SQL authentication, you can save one default username/password pair per
+engine in the operating-system keyring. This is useful when many servers share
+the same diagnostic account:
+
+```
+sqlpinger credentials set --engine mssql --username dbm_user
+sqlpinger credentials set --engine pg --username dbm_user
+sqlpinger credentials status
+sqlpinger credentials clear --engine mssql
+```
+
+The `set` command prompts for the password without echoing it. After defaults
+are configured, omit `--username` and `--password` to use the saved credentials:
+
+```
+sqlpinger mssql --server my-server.database.windows.net --database database-name --auth sql --once
+sqlpinger pg --server my-server.postgres.database.azure.com --database database-name --auth sql --once
+```
+
+If `--username` is provided, the saved defaults are ignored and the CLI uses
+`--password` or prompts for one as before. Passing `--password` without
+`--username` is rejected to avoid mixing explicit and default credentials.
+
 > Be careful when using the authentication option `azure-ad` (SQL Server only). It will open a window prompting you to enter your credentials. However, this prompt may appear at any point during the tool's execution. If you miss it and don't complete the authentication, the tool will get stuck.
 
 ## Example output
 
 ```
 Starting monitor for my-server.database.windows.net/database-name every 10s using SqlServerEngine + AzureADInteractive
-✅ Connection is healthy
-❌ Connection failed: [08S01] ... (error message)
-✅ Recovered. Downtime lasted 22s.
+Connection is healthy
+Connection failed: [08S01] ... (error message)
+Recovered. Downtime lasted 22s.
 ```
 
 On Ctrl + C:

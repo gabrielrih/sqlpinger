@@ -1,7 +1,7 @@
 [project]
 name = "sqlpinger"
 version = "0.1.0"
-description = "A lightweight CLI tool to monitor SQL Server downtime periods"
+description = "A lightweight CLI tool to monitor database availability"
 authors = [
     {name = "gabrielrih@gmail.com"}
 ]
@@ -11,7 +11,8 @@ dependencies = [
     "pyodbc (>=5.2.0,<6.0.0)",
     "azure-identity (>=1.23.0,<2.0.0)",
     "click (>=8.2.1,<9.0.0)",
-    "psycopg2-binary (>=2.9,<3.0)"
+    "psycopg2-binary (>=2.9,<3.0)",
+    "keyring (>=25.7.0,<26.0.0)"
 ]
 packages = [{ include = "sqlpinger" }]
 

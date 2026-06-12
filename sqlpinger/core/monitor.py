@@ -35,9 +35,9 @@ class AvailabilityMonitor:
                     self.handle_exception(e)
                     time.sleep(self.interval)  # wait some time when it fails to avoid retry all the time
         except KeyboardInterrupt:
-            self.logger.warning('🛑 Monitoring stopped by user.')
+            self.logger.warning('Monitoring stopped by user.')
             self.connection_manager.disconnect()
-            self.logger.info("📋 Downtime Summary:")
+            self.logger.info("Downtime Summary:")
             self.logger.info(self.summary)
 
     def run_once(self) -> bool:
@@ -63,12 +63,12 @@ class AvailabilityMonitor:
 
     def recover_from_downtime(self):
         duration: int = self.downtime.finish()
-        self.logger.warning(f"✅ Recovered. Downtime lasted {duration}s.")
+        self.logger.warning(f"Recovered. Downtime lasted {duration}s.")
 
     def handle_exception(self, error: Exception):
         self.connection_manager.disconnect()
         if self.downtime.is_active():
-            self.logger.debug(f'❌ Connection is still failing: {error}')
+            self.logger.debug(f'Connection is still failing: {error}')
             return
         self.downtime.start()
-        self.logger.error(f'❌ Connection failed: {error}')
+        self.logger.error(f'Connection failed: {error}')

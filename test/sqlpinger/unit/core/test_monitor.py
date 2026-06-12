@@ -105,7 +105,7 @@ class TestAvailabilityMonitor(TestCase):
 
         self.monitor.recover_from_downtime()
 
-        self.monitor.logger.warning.assert_called_with("✅ Recovered. Downtime lasted 42s.")
+        self.monitor.logger.warning.assert_called_with("Recovered. Downtime lasted 42s.")
 
     def test_handle_exception_when_downtime_already_active(self):
         self.monitor.downtime.is_active.return_value = True
@@ -114,7 +114,7 @@ class TestAvailabilityMonitor(TestCase):
         self.monitor.handle_exception(error)
 
         self.monitor.connection_manager.disconnect.assert_called_once()
-        self.monitor.logger.debug.assert_called_with(f'❌ Connection is still failing: {error}')
+        self.monitor.logger.debug.assert_called_with(f'Connection is still failing: {error}')
         self.monitor.logger.error.assert_not_called()
         self.monitor.downtime.start.assert_not_called()
 
@@ -126,4 +126,4 @@ class TestAvailabilityMonitor(TestCase):
 
         self.monitor.connection_manager.disconnect.assert_called_once()
         self.monitor.downtime.start.assert_called_once()
-        self.monitor.logger.error.assert_called_with(f'❌ Connection failed: {error}')
+        self.monitor.logger.error.assert_called_with(f'Connection failed: {error}')

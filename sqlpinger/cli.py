@@ -4,6 +4,7 @@ import sqlpinger.config as config
 
 from sqlpinger import __version__
 from sqlpinger.core.monitor import AvailabilityMonitor
+from sqlpinger.credentials_cli import credentials, resolve_sql_auth_credentials
 from sqlpinger.engines.postgres import (
     PostgresAuthStrategyFactory,
     PostgresAuthTypes,
@@ -36,6 +37,21 @@ def cli():
     """Monitor a database continuously and log downtimes."""
 
 
+cli.add_command(credentials)
+
+
+def resolve_credentials(
+    engine: str,
+    auth: str,
+    sql_auth: str,
+    username: str | None,
+    password: str | None,
+) -> tuple[str | None, str | None]:
+    if auth != sql_auth:
+        return username, password
+    return resolve_sql_auth_credentials(engine=engine, username=username, password=password)
+
+
 @cli.command()
 @common_options
 @click.option('--auth', type=click.Choice(SqlServerAuthTypes.to_list()),
@@ -46,8 +62,13 @@ def mssql(server, database, interval, auth, username, password, verbose, once, d
     """Monitor a SQL Server database."""
     config.verbose = verbose
     effective_interval = DEFAULT_INTERVAL if once else interval
-    if auth == SqlServerAuthTypes.SQL.value and not password:
-        password = click.prompt(f'Password for user "{username}"', hide_input=True, type=str)
+    username, password = resolve_credentials(
+        engine='mssql',
+        auth=auth,
+        sql_auth=SqlServerAuthTypes.SQL.value,
+        username=username,
+        password=password,
+    )
     auth_strategy = SqlServerAuthStrategyFactory.create(
         auth=auth,
         driver=driver,
@@ -75,8 +96,13 @@ def pg(server, database, interval, auth, username, password, verbose, once, port
     """Monitor a PostgreSQL database."""
     config.verbose = verbose
     effective_interval = DEFAULT_INTERVAL if once else interval
-    if auth == PostgresAuthTypes.SQL.value and not password:
-        password = click.prompt(f'Password for user "{username}"', hide_input=True, type=str)
+    username, password = resolve_credentials(
+        engine='pg',
+        auth=auth,
+        sql_auth=PostgresAuthTypes.SQL.value,
+        username=username,
+        password=password,
+    )
     auth_strategy = PostgresAuthStrategyFactory.create(
         auth=auth,
         timeout_in_seconds=effective_interval,

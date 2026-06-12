@@ -1,13 +1,10 @@
 import json
 from datetime import datetime
-from typing import List, Dict, Optional
-
-from sqlpinger.util.logger import Logger
 
 
 class DowntimeSummary:
     def __init__(self):
-        self.downtimes: List[Dict[str, str]] = []
+        self.downtimes: list[dict[str, str]] = []
 
     def record(self, start: datetime, end: datetime) -> None:
         duration = (end - start).total_seconds()
@@ -18,10 +15,10 @@ class DowntimeSummary:
         })
 
     def __str__(self):
-        summary: Dict = self.to_dict()
-        return json.dumps(summary, indent = 4)
+        summary: dict = self.to_dict()
+        return json.dumps(summary, indent=4)
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         total_downtime_seconds = sum(
             int(entry["time"].split()[0]) for entry in self.downtimes
         )
@@ -35,13 +32,12 @@ class DowntimeSummary:
 
 
 class Downtime:
-    def __init__(self, summary: Optional[DowntimeSummary] = None):
+    def __init__(self, summary: DowntimeSummary | None = None):
         self.start_date = None
         self.end_date = None
         self.summary = summary if summary else DowntimeSummary()
-        self.logger = Logger.get_logger(__name__)
 
-    def start(self):
+    def start(self) -> None:
         if self.is_active():  # downtime already started
             return
         self.start_date = datetime.now()
@@ -49,10 +45,10 @@ class Downtime:
 
     def is_active(self) -> bool:
         return self.start_date is not None
-    
-    def finish(self) -> Optional[int]:
+
+    def finish(self) -> int | None:
         if not self.is_active():
-            return
+            return None
         self.end_date = datetime.now()
         self.summary.record(self.start_date, self.end_date)
         duration: float = duration_in_seconds(self.start_date, self.end_date)

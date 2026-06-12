@@ -51,6 +51,7 @@ class TestSqlServerConnectionManager(TestCase):
         mock_connect.assert_called_once()
         mock_conn.cursor.assert_called_once()
         mock_cursor.execute.assert_called_once_with("SELECT 1")
+        mock_cursor.close.assert_called_once_with()
 
     def test_disconnect_closes_connection(self):
         mock_conn = MagicMock()
