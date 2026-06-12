@@ -88,6 +88,15 @@ sqlpinger mssql --help
 sqlpinger pg --help
 ```
 
+To run a single immediate health check and exit, add `--once`. In this mode
+the CLI executes `SELECT 1`, prints the usual success or failure message, and
+does not use `--interval` as a delay:
+
+```
+sqlpinger mssql --server my-server.database.windows.net --database database-name --auth sql --username my_user --once
+sqlpinger pg --server my-server.postgres.database.azure.com --database database-name --auth sql --username my_user --once
+```
+
 > Be careful when using the authentication option `azure-ad` (SQL Server only). It will open a window prompting you to enter your credentials. However, this prompt may appear at any point during the tool's execution. If you miss it and don't complete the authentication, the tool will get stuck.
 
 ## Example output

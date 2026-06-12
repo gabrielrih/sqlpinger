@@ -40,6 +40,23 @@ class AvailabilityMonitor:
             self.logger.info("📋 Downtime Summary:")
             self.logger.info(self.summary)
 
+    def run_once(self) -> bool:
+        self.logger.info(
+            f"Running one-time healthcheck for {self.server}/{self.database} "
+            f"using {self.engine.__class__.__name__} + {self.auth_strategy.__class__.__name__}"
+        )
+        success = True
+        try:
+            sql: str = self.engine.build_healthcheck_sql()
+            self.connection_manager.execute(sql)
+            self.logger.debug('One-time healthcheck completed successfully')
+        except Exception as e:
+            success = False
+            self.handle_exception(e)
+        finally:
+            self.connection_manager.disconnect()
+        return success
+
     def run_check(self):
         sql: str = self.engine.build_heartbeat_sql(self.interval)
         self.connection_manager.execute(sql)

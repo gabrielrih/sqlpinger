@@ -8,5 +8,8 @@ class PostgresEngine(Engine):
     def build_heartbeat_sql(self, seconds: int) -> str:
         return build_pg_sleep_sql(seconds=seconds)
 
+    def build_healthcheck_sql(self) -> str:
+        return "SELECT 1"
+
     def create_connection_manager(self, conn_str: str, timeout: int) -> ConnectionManager:
         return PostgresConnectionManager(conn_str, timeout=timeout)

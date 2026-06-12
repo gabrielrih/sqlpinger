@@ -1,5 +1,6 @@
 from unittest import TestCase
 
+from sqlpinger.engines.sqlserver.engine import SqlServerEngine
 from sqlpinger.engines.sqlserver.sql_commands import build_waitfor_delay_sql
 
 
@@ -21,3 +22,6 @@ class TestStandaloneMethods(TestCase):
         expected_sql = "WAITFOR DELAY '01:00:10'"
         sql = build_waitfor_delay_sql(seconds=seconds)
         self.assertEqual(expected_sql, sql)
+
+    def test_engine_build_healthcheck_sql(self):
+        self.assertEqual(SqlServerEngine().build_healthcheck_sql(), "SELECT 1")
