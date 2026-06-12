@@ -16,9 +16,10 @@ In both cases it automatically detects and logs downtime intervals (with timesta
 
 # Features
 - Continuous connection monitoring
+- Single immediate health check with `--once`
 - Detects and logs downtime periods
 - Smart error grouping (no repeated messages for same errors)
-- JSON-formatted summary with total downtime
+- JSON-formatted summary with total downtime in continuous mode
 - **Supported engines**:
   - **SQL Server** (`sqlpinger mssql ...`) - heartbeat: `WAITFOR DELAY`. Works with Azure SQL Database, Azure Managed Instance and on-prem SQL Server.
   - **PostgreSQL** (`sqlpinger pg ...`) - heartbeat: `SELECT pg_sleep(...)`. Targeted at Azure PostgreSQL Flexible Server (or any standard Postgres).
@@ -126,7 +127,7 @@ On Ctrl + C:
 ```
 
 # Things to keep in mind
-This CLI will consider as "downtime" anything that prevents a proper connection and execution of the heartbeat query (`WAITFOR DELAY` for SQL Server or `SELECT pg_sleep(...)` for PostgreSQL), including:
+In continuous mode, this CLI will consider as "downtime" anything that prevents a proper connection and execution of the heartbeat query (`WAITFOR DELAY` for SQL Server or `SELECT pg_sleep(...)` for PostgreSQL), including:
 
 - Connection issues: Connection timeout, Network unreachable, host not found, TCP connection refused and more;
 - Transient network errors: Temporary disruptions such as packet loss, high latency, or intermittent drops;
