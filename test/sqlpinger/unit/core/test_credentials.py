@@ -28,12 +28,36 @@ class TestDefaultCredentialStore(TestCase):
         ])
         self.keyring.delete_password.assert_not_called()
 
+    def test_set_default_requires_username(self):
+        with self.assertRaises(CredentialStoreError) as context:
+            self.store.set_default("mssql", "", "secret")
+
+        self.assertEqual(str(context.exception), "Default credentials require a username")
+        self.keyring.set_password.assert_not_called()
+
+    def test_set_default_requires_password(self):
+        with self.assertRaises(CredentialStoreError) as context:
+            self.store.set_default("mssql", "user", "")
+
+        self.assertEqual(str(context.exception), "Default credentials require a password")
+        self.keyring.set_password.assert_not_called()
+
     def test_set_default_removes_previous_user_password(self):
         self.keyring.get_password.return_value = "old_user"
 
         self.store.set_default("pg", "new_user", "secret")
 
         self.keyring.delete_password.assert_called_once_with("sqlpinger:pg", "old_user")
+
+    def test_set_default_wraps_keyring_write_errors(self):
+        self.keyring.get_password.return_value = None
+        self.keyring.set_password.side_effect = KeyringError("write failed")
+
+        with self.assertRaises(CredentialStoreError) as context:
+            self.store.set_default("mssql", "user", "secret")
+
+        self.assertIn("Secure credential storage is unavailable", str(context.exception))
+        self.assertIn("write failed", str(context.exception))
 
     def test_get_default_returns_credentials(self):
         self.keyring.get_password.side_effect = ["user", "secret"]
@@ -79,6 +103,22 @@ class TestDefaultCredentialStore(TestCase):
         removed = self.store.clear_default("pg")
 
         self.assertFalse(removed)
+
+    def test_clear_default_wraps_keyring_delete_errors(self):
+        self.keyring.get_password.return_value = "user"
+        self.keyring.delete_password.side_effect = KeyringError("delete failed")
+
+        with self.assertRaises(CredentialStoreError) as context:
+            self.store.clear_default("pg")
+
+        self.assertIn("Secure credential storage is unavailable", str(context.exception))
+        self.assertIn("delete failed", str(context.exception))
+
+    def test_delete_password_reraises_missing_entry_when_not_ignoring_missing(self):
+        self.keyring.delete_password.side_effect = PasswordDeleteError("missing")
+
+        with self.assertRaises(PasswordDeleteError):
+            self.store._delete_password("sqlpinger:mssql", "user", ignore_missing=False)
 
     def test_keyring_errors_are_wrapped_with_actionable_message(self):
         self.keyring.get_password.side_effect = KeyringError("backend unavailable")

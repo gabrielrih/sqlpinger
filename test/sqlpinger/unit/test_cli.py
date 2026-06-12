@@ -4,7 +4,7 @@ from unittest.mock import patch, MagicMock
 from click.testing import CliRunner
 
 from sqlpinger.cli import cli
-from sqlpinger.core.credentials import DefaultCredentials
+from sqlpinger.core.credentials import CredentialStoreError, DefaultCredentials
 
 
 class TestCliHelp(TestCase):
@@ -98,6 +98,22 @@ class TestCredentialsCommands(TestCase):
         self.assertNotIn('secret', result.output)
 
     @patch('sqlpinger.credentials_cli.DefaultCredentialStore')
+    def test_credentials_set_reports_store_errors(self, mock_store_cls):
+        mock_store = MagicMock()
+        mock_store.set_default.side_effect = CredentialStoreError("keyring unavailable")
+        mock_store_cls.return_value = mock_store
+
+        result = self.runner.invoke(cli, [
+            'credentials',
+            'set',
+            '--engine', 'mssql',
+            '--username', 'default_user',
+        ], input='secret\n')
+
+        self.assertNotEqual(result.exit_code, 0)
+        self.assertIn('keyring unavailable', result.output)
+
+    @patch('sqlpinger.credentials_cli.DefaultCredentialStore')
     def test_credentials_status_shows_configured_engine_without_password(self, mock_store_cls):
         mock_store = MagicMock()
         mock_store.get_default.return_value = DefaultCredentials(username='default_user', password='secret')
@@ -130,6 +146,21 @@ class TestCredentialsCommands(TestCase):
         self.assertIn('mssql: not configured', result.output)
 
     @patch('sqlpinger.credentials_cli.DefaultCredentialStore')
+    def test_credentials_status_reports_store_errors(self, mock_store_cls):
+        mock_store = MagicMock()
+        mock_store.get_default.side_effect = CredentialStoreError("keyring unavailable")
+        mock_store_cls.return_value = mock_store
+
+        result = self.runner.invoke(cli, [
+            'credentials',
+            'status',
+            '--engine', 'mssql',
+        ])
+
+        self.assertNotEqual(result.exit_code, 0)
+        self.assertIn('keyring unavailable', result.output)
+
+    @patch('sqlpinger.credentials_cli.DefaultCredentialStore')
     def test_credentials_clear_removes_default_credentials(self, mock_store_cls):
         mock_store = MagicMock()
         mock_store.clear_default.return_value = True
@@ -144,6 +175,37 @@ class TestCredentialsCommands(TestCase):
         self.assertEqual(result.exit_code, 0, msg=result.output)
         mock_store.clear_default.assert_called_once_with('pg')
         self.assertIn('Default credentials cleared for pg.', result.output)
+
+    @patch('sqlpinger.credentials_cli.DefaultCredentialStore')
+    def test_credentials_clear_reports_missing_defaults(self, mock_store_cls):
+        mock_store = MagicMock()
+        mock_store.clear_default.return_value = False
+        mock_store_cls.return_value = mock_store
+
+        result = self.runner.invoke(cli, [
+            'credentials',
+            'clear',
+            '--engine', 'pg',
+        ])
+
+        self.assertEqual(result.exit_code, 0, msg=result.output)
+        mock_store.clear_default.assert_called_once_with('pg')
+        self.assertIn('No default credentials configured for pg.', result.output)
+
+    @patch('sqlpinger.credentials_cli.DefaultCredentialStore')
+    def test_credentials_clear_reports_store_errors(self, mock_store_cls):
+        mock_store = MagicMock()
+        mock_store.clear_default.side_effect = CredentialStoreError("keyring unavailable")
+        mock_store_cls.return_value = mock_store
+
+        result = self.runner.invoke(cli, [
+            'credentials',
+            'clear',
+            '--engine', 'pg',
+        ])
+
+        self.assertNotEqual(result.exit_code, 0)
+        self.assertIn('keyring unavailable', result.output)
 
 
 class TestCliWiring(TestCase):
@@ -364,6 +426,24 @@ class TestCliWiring(TestCase):
         self.assertNotEqual(result.exit_code, 0)
         self.assertIn('The --password option requires --username', result.output)
         mock_store_cls.assert_not_called()
+        mock_factory.create.assert_not_called()
+
+    def test_default_credentials_lookup_errors_fail_before_auth_factory(self):
+        with patch('sqlpinger.credentials_cli.DefaultCredentialStore') as mock_store_cls, \
+             patch('sqlpinger.cli.PostgresAuthStrategyFactory') as mock_factory:
+            mock_store = MagicMock()
+            mock_store.get_default.side_effect = CredentialStoreError("keyring unavailable")
+            mock_store_cls.return_value = mock_store
+
+            result = self.runner.invoke(cli, [
+                'pg',
+                '--server', 'pghost',
+                '--database', 'pgdb',
+                '--auth', 'sql',
+            ])
+
+        self.assertNotEqual(result.exit_code, 0)
+        self.assertIn('keyring unavailable', result.output)
         mock_factory.create.assert_not_called()
 
     @patch('sqlpinger.cli.AvailabilityMonitor')
