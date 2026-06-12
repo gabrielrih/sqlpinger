@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.5.0-rc.1 (2026-06-12)
+
+### Features
+
+- Adding --once flag
+  ([`648ad5d`](https://github.com/gabrielrih/sqlpinger/commit/648ad5dcd9e21c42ee8e4352a7adec3bba67d9e9))
+
+
 ## v1.4.0 (2026-05-08)
 
 
