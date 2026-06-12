@@ -18,7 +18,7 @@ class ConnectionManager(ABC):
 
 
 class LazyConnectionManager(ConnectionManager):
-    def __init__(self, conn_str: str, timeout: int):
+    def __init__(self, conn_str: str, timeout: int) -> None:
         self.conn_str = conn_str
         self.timeout = timeout
         self.conn = None

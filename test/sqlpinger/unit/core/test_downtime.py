@@ -1,6 +1,7 @@
 from unittest import TestCase
-from freezegun import freeze_time
 from datetime import datetime, timedelta
+
+from freezegun import freeze_time
 
 from sqlpinger.core.downtime import DowntimeSummary, Downtime
 

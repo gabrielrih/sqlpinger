@@ -7,7 +7,14 @@ from sqlpinger.util.logger import Logger
 
 
 class AvailabilityMonitor:
-    def __init__(self, server: str, database: str, interval: int, auth_strategy: AuthStrategy, engine: Engine):
+    def __init__(
+        self,
+        server: str,
+        database: str,
+        interval: int,
+        auth_strategy: AuthStrategy,
+        engine: Engine,
+    ) -> None:
         self.server = server
         self.database = database
         self.interval = interval
@@ -19,7 +26,7 @@ class AvailabilityMonitor:
         self.summary = DowntimeSummary()
         self.downtime = Downtime(summary=self.summary)
 
-    def start_monitoring(self):
+    def start_monitoring(self) -> None:
         self.logger.info(
             f"Starting monitor for {self.server}/{self.database} every {self.interval}s "
             f"using {self.engine.__class__.__name__} + {self.auth_strategy.__class__.__name__}"
@@ -57,15 +64,15 @@ class AvailabilityMonitor:
             self.connection_manager.disconnect()
         return success
 
-    def run_check(self):
+    def run_check(self) -> None:
         sql: str = self.engine.build_heartbeat_sql(self.interval)
         self.connection_manager.execute(sql)
 
-    def recover_from_downtime(self):
+    def recover_from_downtime(self) -> None:
         duration: int = self.downtime.finish()
         self.logger.warning(f"Recovered. Downtime lasted {duration}s.")
 
-    def handle_exception(self, error: Exception):
+    def handle_exception(self, error: Exception) -> None:
         self.connection_manager.disconnect()
         if self.downtime.is_active():
             self.logger.debug(f'Connection is still failing: {error}')

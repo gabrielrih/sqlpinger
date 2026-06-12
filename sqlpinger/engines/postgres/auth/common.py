@@ -8,9 +8,14 @@ class PostgresAuthTypes(ListableEnum):
 
 class PostgresAuthStrategyFactory:
     @staticmethod
-    def create(auth: str, timeout_in_seconds: int,
-               username: str = '', password: str = '',
-               port: int = 5432, sslmode: str = 'require') -> AuthStrategy:
+    def create(
+        auth: str,
+        timeout_in_seconds: int,
+        username: str = '',
+        password: str = '',
+        port: int = 5432,
+        sslmode: str = 'require',
+    ) -> AuthStrategy:
         auth = auth.lower()
         if auth == PostgresAuthTypes.SQL.value:
             if not username or not password:

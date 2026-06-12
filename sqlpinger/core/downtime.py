@@ -1,11 +1,10 @@
 import json
 from datetime import datetime
-from typing import List, Dict
 
 
 class DowntimeSummary:
-    def __init__(self):
-        self.downtimes: List[Dict[str, str]] = []
+    def __init__(self) -> None:
+        self.downtimes: list[dict[str, str]] = []
 
     def record(self, start: datetime, end: datetime) -> None:
         duration = (end - start).total_seconds()
@@ -15,11 +14,11 @@ class DowntimeSummary:
             "time": f"{duration:.0f} seconds"
         })
 
-    def __str__(self):
-        summary: Dict = self.to_dict()
+    def __str__(self) -> str:
+        summary: dict = self.to_dict()
         return json.dumps(summary, indent=4)
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         total_downtime_seconds = sum(
             int(entry["time"].split()[0]) for entry in self.downtimes
         )
@@ -33,7 +32,7 @@ class DowntimeSummary:
 
 
 class Downtime:
-    def __init__(self, summary: DowntimeSummary | None = None):
+    def __init__(self, summary: DowntimeSummary | None = None) -> None:
         self.start_date = None
         self.end_date = None
         self.summary = summary if summary else DowntimeSummary()

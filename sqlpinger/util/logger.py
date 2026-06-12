@@ -10,7 +10,7 @@ class Logger:
     )
 
     @staticmethod
-    def get_logger(name):
+    def get_logger(name: str) -> logging.Logger:
         log_level = logging.DEBUG if config.verbose else logging.INFO
         logger = logging.getLogger(name)
         logger.setLevel(level=log_level)

@@ -49,10 +49,13 @@ auth_strategy = PostgresAuthStrategyFactory.create(
 
 - Add type hints for public constructors, public methods, helpers, and abstract
   contracts.
-- Use modern Python typing where the surrounding code supports it:
+- Use modern Python typing for new code:
   `str | None`, `tuple[str | None, str | None]`, `list[dict[str, str]]`.
-- Existing modules may still use `typing.List` or `typing.Dict`; avoid
-  broad churn unless you are already editing the same area.
+- Do not use `typing.List`, `typing.Dict`, or `typing.Optional` in new code.
+  Prefer built-in generics (`list`, `dict`, `tuple`) and the `| None` union
+  syntax.
+- Existing modules may still have legacy typing imports; migrate them only when
+  you are already editing that area.
 - Abstract methods should declare return types and use `...` as their body.
 
 ## Architecture

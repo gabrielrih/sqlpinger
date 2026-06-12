@@ -1,6 +1,7 @@
+from dataclasses import dataclass
+
 import keyring
 from keyring.errors import KeyringError, PasswordDeleteError
-from dataclasses import dataclass
 
 
 SUPPORTED_CREDENTIAL_ENGINES = ("mssql", "pg")
@@ -19,7 +20,7 @@ class CredentialStoreError(RuntimeError):
 
 
 class DefaultCredentialStore:
-    def __init__(self, keyring_backend=None):
+    def __init__(self, keyring_backend=None) -> None:
         self.keyring = keyring_backend or keyring
 
     def set_default(self, engine: str, username: str, password: str) -> None:
