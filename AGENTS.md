@@ -7,7 +7,7 @@ This file provides guidance to coding agents when working with this repository.
 `sqlpinger` is a Python CLI that checks database availability for SQL Server
 and PostgreSQL. In continuous mode it repeatedly runs a database-specific
 heartbeat query and records execution failures as downtime intervals. It is
-distributed as a wheel via GitHub Releases and requires Python >=3.11.
+distributed as a wheel via GitHub Releases and requires Python >=3.12.
 
 Supported engines:
 
@@ -20,8 +20,8 @@ Supported engines:
 ## Common commands
 
 Dependencies are managed with Poetry. Runtime dependencies include `pyodbc`,
-`azure-identity`, `click`, and `psycopg2-binary`; dev tooling adds `pytest`,
-`coverage`, and `freezegun`.
+`azure-identity`, `click`, `psycopg2-binary`, and `keyring`; dev tooling adds
+`pytest`, `coverage`, and `freezegun`.
 
 ```bash
 poetry install --no-interaction --all-groups
@@ -36,6 +36,13 @@ poetry run sqlpinger mssql --server ... --database ... --auth sql --username ...
 
 poetry build
 ```
+
+## Python code style
+
+Follow `PYTHON_CODE_STYLE.md` for project-specific Python coding conventions,
+including formatting, typing, module boundaries, CLI behavior, logging,
+credentials/keyring handling, exceptions, and test patterns. Prefer that guide
+over generic style assumptions when generating or reviewing code for this repo.
 
 CI (`.github/workflows/ci.yml`) runs `test/sqlpinger/unit`; the `e2e/`
 directory exists but is empty. Versioning and release artifacts are produced

@@ -4,21 +4,24 @@ import sqlpinger.config as config
 
 
 class Logger:
-    @staticmethod
-    def get_logger(name):
-        LOG_LEVEL = 'INFO'
-        if config.verbose:
-            LOG_LEVEL = 'DEBUG'
-        logger = logging.getLogger(name)
-        logger.setLevel(level=LOG_LEVEL)
-        handler = logging.StreamHandler()
-        handler.setLevel(LOG_LEVEL)
+    FORMAT = (
+        "%(asctime)s %(levelname)s [%(name)s] [%(filename)s:%(lineno)d]"
+        " - %(message)s"
+    )
 
-        formatter = logging.Formatter(
-            "%(asctime)s %(levelname)s [%(name)s] [%(filename)s:%(lineno)d]"
-            " - %(message)s"
-        )
-        
-        handler.setFormatter(formatter)
-        logger.addHandler(handler)
+    @staticmethod
+    def get_logger(name: str) -> logging.Logger:
+        log_level = logging.DEBUG if config.verbose else logging.INFO
+        logger = logging.getLogger(name)
+        logger.setLevel(level=log_level)
+        logger.propagate = False
+
+        if not logger.handlers:
+            handler = logging.StreamHandler()
+            handler.setFormatter(logging.Formatter(Logger.FORMAT))
+            logger.addHandler(handler)
+
+        for handler in logger.handlers:
+            handler.setLevel(log_level)
+
         return logger

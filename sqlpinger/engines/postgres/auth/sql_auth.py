@@ -4,7 +4,14 @@ from sqlpinger.core.auth.base import AuthStrategy
 
 
 class PostgresSqlAuth(AuthStrategy):
-    def __init__(self, username: str, password: str, port: int, sslmode: str, timeout_in_seconds: int):
+    def __init__(
+        self,
+        username: str,
+        password: str,
+        port: int,
+        sslmode: str,
+        timeout_in_seconds: int,
+    ) -> None:
         self.username = username
         self.password = password
         self.port = port

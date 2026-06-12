@@ -12,7 +12,13 @@ class SqlServerAuthTypes(ListableEnum):
 
 class SqlServerAuthStrategyFactory:
     @staticmethod
-    def create(auth: str, driver: str, timeout_in_seconds: int, username: str = '', password: str = '') -> AuthStrategy:
+    def create(
+        auth: str,
+        driver: str,
+        timeout_in_seconds: int,
+        username: str = '',
+        password: str = '',
+    ) -> AuthStrategy:
         auth = auth.lower()
         if auth == SqlServerAuthTypes.SQL.value:
             if not username or not password:

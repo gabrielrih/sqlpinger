@@ -3,7 +3,8 @@ from sqlpinger.core.auth.base import AuthStrategy
 
 class WindowsAuth(AuthStrategy):
     ''' Connection using the current Windows user '''
-    def __init__(self, driver: str, timeout_in_seconds: int):
+
+    def __init__(self, driver: str, timeout_in_seconds: int) -> None:
         self.driver = driver
         self.timeout_in_seconds = timeout_in_seconds
 

@@ -1,9 +1,7 @@
-import time
-
 from unittest import TestCase
-from freezegun import freeze_time
 from datetime import datetime, timedelta
-from typing import Dict
+
+from freezegun import freeze_time
 
 from sqlpinger.core.downtime import DowntimeSummary, Downtime
 
@@ -13,15 +11,15 @@ class TestDowntimeSummary(TestCase):
         summary = DowntimeSummary()
         self.assertEqual(len(summary.downtimes), 0)
         summary.record(
-            start = datetime.now(),
-            end = datetime.now()
+            start=datetime.now(),
+            end=datetime.now()
         )
         self.assertEqual(len(summary.downtimes), 1)
 
     @freeze_time("2025-05-26 10:00:00")  # mocking datetime.now()
     def test_to_dict(self):
         # Given
-        expected_response: Dict = {
+        expected_response: dict = {
             "summary": {
                 "downtimes_quantity": 1,
                 "total_downtime": "600 seconds"
@@ -39,10 +37,10 @@ class TestDowntimeSummary(TestCase):
         # When
         summary = DowntimeSummary()
         summary.record(
-            start = now - timedelta(minutes = 10),
-            end = now
+            start=now - timedelta(minutes=10),
+            end=now
         )
-        response: Dict = summary.to_dict()
+        response: dict = summary.to_dict()
 
         # Then
         self.assertEqual(response, expected_response)
@@ -63,10 +61,11 @@ class TestDowntime(TestCase):
     def test_start_and_finish_it(self):
         summary = DowntimeSummary()
         downtime = Downtime(summary)
-        downtime.start()
-        self.assertIsInstance(downtime.start_date, datetime)
-        time.sleep(1)
-        downtime.finish()
+        with freeze_time("2025-05-26 10:00:00") as frozen_time:
+            downtime.start()
+            self.assertIsInstance(downtime.start_date, datetime)
+            frozen_time.tick(delta=timedelta(seconds=1))
+            downtime.finish()
         self.assertIsInstance(downtime.end_date, datetime)
         self.assertIsNone(downtime.start_date)
         self.assertEqual(len(summary.downtimes), 1)
@@ -74,7 +73,8 @@ class TestDowntime(TestCase):
     def test_get_duration_is_seconds(self):
         summary = DowntimeSummary()
         downtime = Downtime(summary)
-        downtime.start()
-        time.sleep(2)
-        duration: int = downtime.finish()
+        with freeze_time("2025-05-26 10:00:00") as frozen_time:
+            downtime.start()
+            frozen_time.tick(delta=timedelta(seconds=2))
+            duration: int = downtime.finish()
         self.assertEqual(duration, 2)
