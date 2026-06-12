@@ -43,6 +43,9 @@ You can install the tool by downloading the latest `.whl` file from the Releases
 
 ```
 wget -O "sqlpinger-1.6.0-py3-none-any.whl" "https://github.com/gabrielrih/sqlpinger/releases/download/v1.6.0/sqlpinger-1.6.0-py3-none-any.whl"
+```
+
+```
 pip install --user sqlpinger-1.6.0-py3-none-any.whl
 ```
 
