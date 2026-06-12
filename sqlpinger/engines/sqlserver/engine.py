@@ -8,5 +8,8 @@ class SqlServerEngine(Engine):
     def build_heartbeat_sql(self, seconds: int) -> str:
         return build_waitfor_delay_sql(seconds=seconds)
 
+    def build_healthcheck_sql(self) -> str:
+        return "SELECT 1"
+
     def create_connection_manager(self, conn_str: str, timeout: int) -> ConnectionManager:
         return SqlServerConnectionManager(conn_str, timeout=timeout)
